@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GK Mock Test — 50 प्रश्न</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:0;background:#f4f6f8;color:#0b1220}
+    .wrap{max-width:760px;margin:40px auto;background:#fff;padding:24px;border-radius:12px;box-shadow:0 6px 30px rgba(11,18,32,0.08)}
+    h1{margin:0 0 12px;font-size:22px}
+    .meta{color:#586475;margin-bottom:18px}
+    .question{font-weight:600;margin:18px 0}
+    .options{list-style:none;padding:0}
+    .options li{margin:8px 0}
+    button{background:#0b63d6;color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
+    .footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+    .scorebox{font-weight:700}
+    .result{padding:14px;border-radius:8px;background:#eef6ff;margin-top:16px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>GK Mock Test — 50 प्रश्न</h1>
+    <div class="meta">प्रत्येक प्रश्न के बाद "Next" पर क्लिक करें — अंत में आपका स्कोर दिखेगा।</div>
+
+    <div id="quiz">
+      <div id="qnum"></div>
+      <div id="qtext" class="question"></div>
+      <ul id="opts" class="options"></ul>
+
+      <div class="footer">
+        <div class="scorebox">प्रश्न: <span id="current">0</span>/50</div>
+        <div>
+          <button id="nextBtn">Next</button>
+        </div>
+      </div>
+
+      <div id="result" class="result" style="display:none"></div>
+    </div>
+  </div>
+
+<script>
+const questions = [
+  {q: "भारत का राष्ट्रीय पशु कौन सा है?", opts: ["हाथी","शेर","बाघ","गाय"], a:2},
+  {q: "ताजमहल किस शहर में है?", opts: ["दिल्ली","आगरा","जयपुर","लखनऊ"], a:1},
+  {q: "भारत का सबसे लंबा नदी कौन सी है?", opts: ["गंगा","यमुना","गोदावरी","गोडावरी"], a:0},
+  {q: "भारत का राष्ट्रीय फूल क्या है?", opts: ["कमल","गुलाब","सूरजमुखी","चमेली"], a:0},
+  {q: "विश्व का सबसे बड़ा महासागर कौन सा है?", opts: ["हिन्द महासागर","प्रशांत महासागर","अटलांटिक महासागर","उत्तर ध्रुवीय महासागर"], a:1},
+  {q: "भारत की राजधानी किस वर्ष 1911 में बनी? (प्रश्न: नई दिल्ली) — यह प्रश्न ऐतिहासिक संदर्भ के लिए है) ", opts: ["1911","1947","1950","1931"], a:0},
+  {q: "भारत के पहले प्रधानमंत्री कौन थे?", opts: ["पंडित नेहरू","इन्दिरा गान्धी","मोहनदास करमचन्द गांधी","गुलजारीलाल नंदा"], a:0},
+  {q: "हिंदी दिवस कब मनाया जाता है?", opts: ["14 सितम्बर","26 जनवरी","15 अगस्त","2 अक्टूबर"], a:0},
+  {q: "भारत का सबसे बड़ा राज्य (क्षेत्रफल के हिसाब से) कौन सा है?", opts: ["महाराष्ट्र","राजस्थान","मध्य प्रदेश","उत्तर प्रदेश"], a:1},
+  {q: "नागरिक स्वतंत्रता का अधिकार भारत के हैं?", opts: ["आर्थिक स्वतंत्रता","शिक्षा के अधिकार","बुनियादी मानव अधिकार","कानूनी अधिकार"], a:2},
+  {q: "विश्व की सबसे ऊँची पर्वत चोटी कौन सी है?", opts: ["के2","कंचनजंगा","माउंट एवेरेस्ट","ल्होत्से"], a:2},
+  {q: "किस ग्रह को 'लाल ग्रह' कहा जाता है?", opts: ["शुक्र","मंगल","बुध","बृहस्पति"], a:1},
+  {q: "भारत का राष्ट्रीय पक्षी क्या है?", opts: ["मोर","कबूतर","चिड़िया","दूजा"], a:0},
+  {q: "UN का पूर्ण रूप क्या है?", opts: ["Universal Nations","United Nations","Union of Nations","United Neighbours"], a:1},
+  {q: "भारत का currency (मुद्रा) क्या है?", opts: ["रुपया","डॉलर","पाउंड","यूरो"], a:0},
+  {q: "किस नदी को भारत का पवित्र नदी माना जाता है?", opts: ["गोदावरी","गंगा","नर्मदा","कावेरी"], a:1},
+  {q: "किस महापुरुष को 'राष्ट्रपिता' कहा जाता है?", opts: ["बाल गंगाधर तिलक","महात्मा गांधी","सुभाष चन्द्र बोस","डॉ. राजेंद्र प्रसाद"], a:1},
+  {q: "भारत में चुनाव कराने वाला मुख्य चुनाव आयोग कब बना?", opts: ["1950","1952","1947","1960"], a:0},
+  {q: "ग्रहों में सबसे बड़ा ग्रह कौन सा है?", opts: ["बृहस्पति","शनि","अॉर्बिट","नेपच्यून"], a:0},
+  {q: "भारत का राष्ट्रीय खेल किसे माना जाता है (औपचारिक नहीं) ?", opts: ["हॉकी","क्रिकेट","कबड्डी","फुटबॉल"], a:0},
+  {q: "किस रसायन का प्रयोग पानी को साफ़ करने में होता है?", opts: ["नमक","क्लोरीन","शक्कर","आसिड"], a:1},
+  {q: "विश्व का सबसे बड़ा महाद्वीप कौन सा है?", opts: ["अफ्रीका","एशिया","यूरोप","दक्षिण अमेरिका"], a:1},
+  {q: "भारत का प्रथम राष्ट्रपति कौन था?", opts: ["डॉ. राजेंद्र प्रसाद","डॉ. सर्वपल्ली राधाकृष्णन","जवाहरलाल नेहरू","गोपीनाथ"], a:0},
+  {q: "नोटबंदी (2016) भारत में किस वर्ष हुई थी?", opts: ["2015","2016","2017","2014"], a:1},
+  {q: "विश्व स्वास्थ्य संगठन (WHO) किस साल स्थापित हुआ था?", opts: ["1948","1950","1939","1965"], a:0},
+  {q: "राष्ट्रगान 'जन गण मन' के रचयिता कौन हैं?", opts: ["रवीन्द्रनाथ टैगोर","बंकिम चन्द्र चट्टोपाध्याय","गोपाल कृष्ण गोखले","सूर्यकांत त्रिपाठी"], a:0},
+  {q: "भारत का सबसे ऊँचा जलप्रपात कौन सा है?", opts: ["दुद्सी झरना","अकरोड़ झरना","नाने घाट झरना","निर्मला"], a:0},
+  {q: "भारतीय संविधान कब लागू हुआ था?", opts: ["26 जनवरी 1950","15 अगस्त 1947","26 जनवरी 1949","26 नवम्बर 1950"], a:0},
+  {q: "किस शास्त्रीय नृत्य को 'भारत का राष्ट्रीय नृत्य' कहा जाता है?", opts: ["कथक","भरतनाट्यम","कुचिपुड़ी","ओडिसी"], a:1},
+  {q: "किस देश को 'सूर्य कभी नहीं डूबता' कहा जाता था (इतिहास में)?", opts: ["ब्रिटिश साम्राज्य","रूस","फ्रांस","स्पेन"], a:0},
+  {q: "गन्ना किससे बनता है?", opts: ["चीनी","शहद","तेल","आटा"], a:0},
+  {q: "दुनिया का सबसे घना देश कौन सा है (जनसंख्या घनत्व के आधार पर)?", opts: ["मॉलदीव","बांग्लादेश","मोनाको","भारत"], a:2},
+  {q: "नासा की स्थापना किस वर्ष हुई थी?", opts: ["1958","1961","1945","1970"], a:0},
+  {q: "सूर्य से निकली हल्की किरणों का वैज्ञानिक नाम क्या है?", opts: ["प्रकाश","रेडिएशन","ऊर्जा","सौर विकिरण"], a:3},
+  {q: "भारत का सबसे बड़ा शहर (आबादी के आधार पर) कौन सा है?", opts: ["मुंबई","दिल्ली","कोलकाता","चेन्नई"], a:0},
+  {q: "विश्व बैंक का मुख्यालय कहाँ है?", opts: ["लंदन","वॉशिंगटन डी.सी.","पेरिस","न्यू यॉर्क"], a:1},
+  {q: "शीतोष्णता का पैमाना किसे कहते हैं?", opts: ["टेम्परेचर","हवा","आर्द्रता","दबाव"], a:0},
+  {q: "पहला मानव अंतरिक्ष में कौन गया था?", opts: ["नील आर्मस्ट्रांग","यूरी गागरिन","अल्बर्ट आइंस्टीन","जॉन ग्लेन"], a:1},
+  {q: "किस नदी को भारत का 'सोन नदी' कहा जाता है?", opts: ["सोन","कोसी","गोडावरी","कावेरी"], a:0},
+  {q: "भारत में उच्चतम न्यायालय कहाँ स्थित है?", opts: ["मुंबई","नई दिल्ली","कोलकाता","चेन्नई"], a:1},
+  {q: "विश्व का सबसे बड़ा पशु कौन सा है?", opts: ["हाथी","ब्लू व्हेल","शेर","गैंडा"], a:1},
+  {q: "न्यूटन ने गुरुत्वाकर्षण का नियम किस पुस्तक में बताया?", opts: ["प्रिन्सिपिया मैथमेटिका","ऑर्गनॉन","एटिक्स","इवोल्युशन"], a:0},
+  {q: "किस देश का संघीय राजधानी 'ब्रसेल्स' है?", opts: ["बेल्जियम","ने덜ैंड","जर्मनी","लक्समबर्ग"], a:0},
+  {q: "किस महिला नेल्सन मंडेला के समान समान देश के प्रमुख बनी? (नोट: यह ऐतिहासिक/सामान्य GK प्रश्न है)", opts: ["इंदिरा गांधी","एंगेला मर्केल","मार्गरेट थैचर","जैकलिन"], a:1},
+  {q: "भारत में GST कब लागू हुआ था?", opts: ["2017","2016","2015","2018"], a:0},
+  {q: "जैविक (organic) खेती में क्या कम उपयोग होता है?", opts: ["रासायनिक उर्वरक","सौर ऊर्जा","हर्बल खाद","जैविक कीड़े"], a:0},
+  {q: "विश्व का सबसे बड़ा रेगिस्तान कौन सा है?", opts: ["सहारा","गोबि","काळा रेगिस्तान","अंटार्कटिक"], a:3},
+  {q: "कंप्यूटर का मूल गणना करने वाला भाग क्या कहलाता है?", opts: ["मॉनिटर","प्रोसेसर (CPU)","कीबोर्ड","हार्ड डिस्क"], a:1},
+  {q: "कौन सा तत्व पानी (H2O) का हिस्सा नहीं है?", opts: ["हाइड्रोजन","ऑक्सीजन","नाइट्रोजन","दोनों A और B"], a:2}
+];
+
+let currentIndex = 0;
+let score = 0;
+let selected = null;
+
+const qnum = document.getElementById('qnum');
+const qtext = document.getElementById('qtext');
+const opts = document.getElementById('opts');
+const nextBtn = document.getElementById('nextBtn');
+const current = document.getElementById('current');
+const result = document.getElementById('result');
+
+function renderQuestion(i){
+  const item = questions[i];
+  qnum.textContent = `प्रश्न ${i+1}`;
+  qtext.textContent = item.q;
+  opts.innerHTML = '';
+  item.opts.forEach((o, idx)=>{
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.style.background='#f1f5f9';
+    btn.style.color='#0b1220';
+    btn.style.border='1px solid #e2e8f0';
+    btn.style.padding='10px 12px';
+    btn.style.borderRadius='8px';
+    btn.style.width='100%';
+    btn.textContent = o;
+    btn.onclick = ()=>{
+      // deselect others
+      Array.from(opts.querySelectorAll('button')).forEach(b=>b.dataset.sel='0');
+      btn.dataset.sel='1';
+      selected = idx;
+      // highlight
+      Array.from(opts.querySelectorAll('button')).forEach(b=>b.style.boxShadow='none');
+      btn.style.boxShadow='0 4px 12px rgba(11,99,214,0.12)';
+    };
+    li.appendChild(btn);
+    opts.appendChild(li);
+  });
+  current.textContent = `${i+1}`;
+}
+
+nextBtn.onclick = ()=>{
+  if(selected === null){
+    // allow proceed even if not answered
+    if(!confirm('आपने कोई उत्तर चुना नहीं है। क्या आप आगे बढ़ना चाहते हैं?')) return;
+  } else {
+    if(selected === questions[currentIndex].a) score++;
+  }
+  selected = null;
+  currentIndex++;
+  if(currentIndex >= questions.length){
+    showResult();
+  } else {
+    renderQuestion(currentIndex);
+  }
+};
+
+function showResult(){
+  document.getElementById('quiz').style.display='none';
+  result.style.display='block';
+  const percent = Math.round((score/questions.length)*100);
+  result.innerHTML = `<h2>परीक्षा समाप्त</h2><p>आपका स्कोर: ${score} / ${questions.length} (${percent}%)</p><p>${percent>=60? 'अभिनंदन!':'रखिए, अभ्यास की आवश्यकता है।'}</p>`;
+}
+
+// initial render
+renderQuestion(0);
+</script>
+</body>
+</html>
